@@ -92,7 +92,7 @@ https://yourtld.nostr.name/.well-known/nostr.json
   - Wallet addresses linked to the domain
 
 ## 5. Use Cases
-- **Decentralized Identity**: Verifiable, human-readable Nostr identities via HNS TLDs
-- **Social Networking**: Seamless username integration with Nostr clients
+- **Decentralized Identity**: Verifiable, human-readable Nostr identities via HNS TLDs (NIP-05)
+- **Social Networking**: Seamless username integration with Nostr clients (NIP-21):
 - **Multi-User Domains**: Organizations can manage multiple Nostr identities under one HNS TLD
 
