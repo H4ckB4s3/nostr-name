@@ -95,4 +95,6 @@ https://yourtld.nostr.name/.well-known/nostr.json
 - **Decentralized Identity**: Verifiable, human-readable Nostr identities via HNS TLDs (NIP-05)
 - **Social Networking**: Seamless username integration with Nostr clients (NIP-21):
 - **Multi-User Domains**: Organizations can manage multiple Nostr identities under one HNS TLD
-
+- **Contact List**: nostr.name serves as a locally stored contact list for users with a TXT record prefixed with "nostr:". 
+- **Additional Features**: Social profiles, wallets, and other data can be included in TXT records using the DProfile protocol.
+> **Note**The contact list is compatible with HNS top-level domains (TLDs), sub-level domains (SLDs), and ICANN domains.
