@@ -75,7 +75,7 @@ Additional users follow the pattern `nostrX:npubX` and `nostrnameX:nameX`.
 - **Offchain**: Hosted by supported platforms (faster propagation)
   
 **Formats**:
-- `nostr:npub` - links domain to Nostr public key
+- `nostr:npub` - links domain to Nostr public key with NIP-21
 - `nostrname:name` - defines custom username for NIP-05
 - Sequential prefixes (`nostrX:`, `nostrnameX:`) enable multi-user configs
 
