@@ -93,14 +93,6 @@ https://yourtld.nostr.name/.well-known/nostr.json
 
 ## 5. Use Cases
 - **Decentralized Identity**: Verifiable, human-readable Nostr identities via HNS TLDs
-- **Social Networking**: Seamless integration with Nostr clients
+- **Social Networking**: Seamless username integration with Nostr clients
 - **Multi-User Domains**: Organizations can manage multiple Nostr identities under one HNS TLD
-
-## 6. Security Considerations
-- **TXT Record Integrity**: Onchain records benefit from HNS blockchain immutability
-- **Nostr Key Management**: Users must securely manage their private keys
-- **Client Compatibility**: Use NIP-05 and NIP-21-compliant clients for full functionality
-
-## 7. Conclusion
-Nostr.Name represents a novel approach to bridging decentralized naming systems (HNS) with censorship-resistant social protocols (Nostr). This experimental framework aligns with principles of user sovereignty and decentralization, offering a foundation for further innovation at the intersection of blockchain naming and social networking.
 
