@@ -1,7 +1,6 @@
 # Nostr.Name: 
-An Experimental Web2 Bridge for HNS TLDs and Nostr Protocol
 
-## Abstract
+## An Experimental Web2 Bridge for HNS TLDs and Nostr Protocol
 Nostr.Name introduces an experimental framework to bridge Handshake (HNS) Top-Level Domains (TLDs) with the Nostr protocol, enabling decentralized identity and social connectivity through TXT records stored onchain or offchain. Compliant with NIP-05 and NIP-21 standards, Nostr.Name leverages the immutability and accessibility of HNS TLDs to map Nostr public keys (npub) to human-readable domain-based identities. This system facilitates seamless integration with Nostr-compatible clients by combining decentralized domain ownership with Nostr's censorship-resistant communication protocol.
 
 ## 1. Introduction
@@ -57,6 +56,7 @@ TXT Record 1: @ → nostr:npub1
 TXT Record 2: @ → nostrname:name1
 Result: name1@yourtld.nostr.name
 
+**Example Configuration**:
 User 2:
 
 TXT Record 1: @ → nostr1:npub2
