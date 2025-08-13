@@ -54,6 +54,7 @@ User 1:
 TXT Record 1: @ → nostr:npub1
 
 TXT Record 2: @ → nostrname:name1
+
 Result: name1@yourtld.nostr.name
 
 **Example Configuration**:
@@ -62,6 +63,7 @@ User 2:
 TXT Record 1: @ → nostr1:npub2
 
 TXT Record 2: @ → nostrname1:name2
+
 Result: name2@yourtld.nostr.name
 
 
