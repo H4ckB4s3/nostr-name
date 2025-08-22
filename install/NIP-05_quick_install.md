@@ -1,5 +1,10 @@
 # Quick Setup for NIP-05 Server
 
+### Create nip05-server.js
+```bash
+nano /var/www/nostr.name/nip05-server.js
+```
+
 If you just want to install and run everything in sequence, copy-paste this block:
 
 ```bash
