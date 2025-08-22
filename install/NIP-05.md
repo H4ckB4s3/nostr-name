@@ -6,6 +6,11 @@ This guide provides step-by-step instructions to install and configure the NIP-0
 
 ## Installation
 
+### Create nip05-server.js configuration file
+```bash
+nano /var/www/nostr.name/nip05-server.js
+```
+
 ### Install Node.js and npm
 ```bash
 sudo apt install nodejs npm
