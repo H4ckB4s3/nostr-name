@@ -24,7 +24,8 @@ To associate an HNS TLD with a Nostr identity, users must configure TXT records 
 1. **Create a TXT Record**:
    - Type: `TXT`
    - Name: `@`
-   - Value: `nostr:yournpubhere` (no spaces, `nostr:` prefix is mandatory)
+   - Value: `nostr:yournpubhere`
+   > **Note**: No spaces, `nostr:` prefix is mandatory
 
 2. **Propagation**:
    - Offchain TXT records provide instant results
