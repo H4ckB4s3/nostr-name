@@ -38,19 +38,7 @@ sudo certbot certonly --manual --preferred-challenges=dns --agree-tos --no-eff-e
 
 Follow the prompts to add a TXT record to your DNS when requested.
 
-## 5. Set Up Auto-Renewal
-
-Test the certificate renewal process and schedule automatic renewals.
-
-```bash
-# Test renewal
-sudo certbot renew --dry-run
-
-# Schedule daily renewal at 12:00 PM
-(sudo crontab -l 2>/dev/null; echo "0 12 * * * /usr/bin/certbot renew --quiet") | sudo crontab -
-```
-
-## 6. Create Nginx Configuration
+## 5. Create Nginx Configuration
 
 Create a new Nginx configuration file.
 
@@ -87,7 +75,7 @@ server {
 
 Save and exit (`Ctrl+X`, then `Y`, then `Enter`).
 
-## 7. Enable the Site
+## 6. Enable the Site
 
 Enable the Nginx configuration and restart the server.
 
@@ -97,7 +85,7 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-## 8. Create a Test HTML File
+## 7. Create a Test HTML File
 
 Create a simple test page to verify the setup.
 
@@ -105,7 +93,7 @@ Create a simple test page to verify the setup.
 echo "<html><body><h1>Welcome to nostr.name!</h1></body></html>" > /var/www/nostr.name/index.html
 ```
 
-## 9. Verify Setup
+## 8. Verify Setup
 
 - Visit `https://nostr.name` in your browser to confirm the test page loads with SSL.
 - Test a subdomain like `https://test.nostr.name` to ensure the wildcard SSL works.
