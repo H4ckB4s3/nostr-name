@@ -55,22 +55,23 @@ To customize the username portion of the NIP-05 identifier (e.g., `myname@yourtl
 Nostr.Name supports multiple users per HNS TLD using prefixed TXT record pairs:
 
 **Example Configuration**:
-User 1:
+1. User 1:
 
-TXT Record 1: @ → nostr:npub1
+   - TXT Record 1: @ → nostr:npub1
 
-TXT Record 2: @ → nostrname:name1
+   - TXT Record 2: @ → nostrname:name1
 
-Result: `name1@yourtld.nostr.name`
+   > **Result**: `name1@yourtld.nostr.name`
+
 
 **Example Configuration**:
-User 2:
+2. User 2:
 
-TXT Record 1: @ → nostr1:npub2
+   - TXT Record 1: @ → nostr1:npub2
 
-TXT Record 2: @ → nostrname1:name2
+   - TXT Record 2: @ → nostrname1:name2
 
-Result: `name2@yourtld.nostr.name`
+ > **Result**: `name2@yourtld.nostr.name`
 
 
 Additional users follow the pattern `nostrX:npubX` and `nostrnameX:nameX`.
@@ -90,7 +91,7 @@ Enhance your domain identity by adding profile information, social media links, 
 
 **Profile**
 - `pfp:<url>` - Profile picture URL (e.g., `pfp:example.com/img.png`)
-- 
+  
 **Communication**
 - `mail:<email>` - Email address
 - `tel:<number>` - Phone number
