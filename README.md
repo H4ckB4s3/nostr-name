@@ -88,11 +88,9 @@ Enhance your domain identity by adding profile information, social media links, 
 
 #### Available Prefixes
 
-**Profile & Appearance**
+**Profile**
 - `pfp:<url>` - Profile picture URL (e.g., `pfp:example.com/img.png`)
-- `bgcolor:<hex>` - Background color in HEX format (e.g., `bgcolor:ffffff`)
-- `bg:<url>` - Background image URL (e.g., `bg:example.com/bg_img.png`)
-
+- 
 **Communication**
 - `mail:<email>` - Email address
 - `tel:<number>` - Phone number
@@ -103,11 +101,11 @@ Enhance your domain identity by adding profile information, social media links, 
 - `wa:<number>` - WhatsApp
 - `tg:<username>` - Telegram
 
-**Web & Decentralized**
+**Web**
 - `link:<url>` - Redirect to a webpage
-- `ens:<url>` - Ethereum Name Service
-- `onion:<url>` - Onion address
-- `ipfs:<url>` - IPFS content
+- `ens:<url>` - Link to Ethereum Name Service (Web2 bridge)
+- `onion:<url>` - Link to Onion address (Tor browser need to resolve)
+- `ipfs:<url>` - Link to IPFS content (Web2 bridge)
 - `pk:<url>` - pkdns page
 
 **Social Media**
@@ -119,15 +117,15 @@ Enhance your domain identity by adding profile information, social media links, 
 - `fb:<username>` - Facebook profile
 
 **Media Platforms**
-- `yt:<username>` - YouTube channel/URL
 - `rumble:<channelname>` - Rumble channel/URL
+- `yt:<username>` - YouTube channel/URL
 
 **Cryptocurrency Wallets**
 - `btc:<address>` - Bitcoin
+- `ln:<address>` - Lightning Network
 - `hns:<address>` - Handshake
 - `xmr:<address>` - Monero
 - `eth:<address>` - Ethereum
-- `ln:<address>` - Lightning Network
 - `zec:<address>` - Zcash
 - `bat:<address>` - Basic Attention Token
 
