@@ -9,16 +9,17 @@ The Handshake Naming System (HNS) provides a decentralized alternative to tradit
 ## 2. System Overview
 Nostr.Name operates as a lightweight, experimental Web2 bridge that resolves HNS TLDs to Nostr identities. It leverages TXT records, stored either onchain (via the HNS blockchain) or offchain (via supported platforms or your own Nameservers), to map a user's Nostr public key (npub) to their HNS TLD. The system is fully compliant with:
 
-- **NIP-05**: Nostr's standard for mapping human-readable identifiers to Nostr public keys.
+- **NIP-05**: Nostr's standard for mapping human-readable identifiers to Nostr public keys. (HNS TLD only)
 - **NIP-21**: Nostr's URI scheme for linking to user profiles or events.
 
 ### Key Features:
+- Find and Save Nostr users in the directory saved on local storage (easy import/backup/clear)
 - Visiting `yourtld.nostr.name` redirects users to their Nostr profile (if a NIP-21-compatible client is installed)
 - Displays a webpage containing the associated npub, social data, and wallet addresses when no compatible client is detected
 - Generates a JSON file (`yourtld.nostr.name/.well-known/nostr.json`) containing the npub in HEX format for NIP-05 compatibility
 
 ## 3. Setup Instructions
-To associate an HNS TLD with a Nostr identity, users must configure TXT records in their HNS TLD manager. Supported platforms include Namebase.io, Shakestation.io, HNS.ID, own nameserver, and Bobwallet.io.
+To associate domain with a Nostr identity, users must configure TXT records in DNS manager. Supported platforms include Namebase.io, Shakestation.io, HNS.ID, own nameserver, and Bobwallet.io.
 
 ### 3.1. Basic Configuration
 1. **Create a TXT Record**:
@@ -80,7 +81,7 @@ Additional users follow the pattern `nostrX:npubX` and `nostrnameX:nameX`.
 - `nostrname:name` - defines custom username for NIP-05
 - Sequential prefixes (`nostrX:`, `nostrnameX:`) enable multi-user configs
 
-### 4.2. JSON Output
+### 4.2. JSON Output NIP-05
 Generated JSON file contains the npub in HEX format, accessible via:
 https://yourtld.nostr.name/.well-known/nostr.json
 
