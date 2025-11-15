@@ -2,16 +2,9 @@
 
 # Nostr.Name - DNS-Based Identity Bridge
 
-Nostr.Name introduces an experimental framework to bridge DNS/HNS domains with the Nostr protocol, enabling decentralized identity and social connectivity through TXT records stored onchain or offchain. Nostr.Name leverages the immutability and accessibility of HNS TLDs and traditional DNS to map Nostr public keys (npub) to human-readable domain-based identities.
-
-The platform serves as a naming bridge that transforms HNS TLDs into `.nostr.name` second-level domains, making them fully NIP-05 compatible for identity verification across the Nostr ecosystem. Additionally, Nostr.Name functions as a NIP-21 redirect service, allowing `nostr:` URI schemes to resolve through domain-based identities.
-
-This system functions as a comprehensive contact directory for DNS-based identity, enabling domain owners to publish not just their Nostr account, but a complete digital identity including profile pictures, cryptocurrency wallets, social profiles, and communication channels - all through simple TXT records.
-
-By combining decentralized domain ownership with Nostr's censorship-resistant communication protocol, Nostr.Name creates a universal identity layer that works across both traditional DNS and blockchain-based naming systems.
 
 ## 1. Introduction
-Nostr.Name bridges traditional DNS domains and decentralized HNS TLDs with the Nostr protocol through a unified identity system. The platform enables domain owners to publish comprehensive contact information via simple TXT records, creating a universal directory for decentralized identities.
+Nostr.Name bridges DNS and HNS domains with Nostr through TXT records, transforming HNS TLDs into NIP-05 compatible identities while serving as a comprehensive contact directory for complete digital profiles including socials, wallets, and communication channels across both naming systems.
 
 **For DNS domains**: The platform functions as a NIP-21 compliant contact directory, allowing traditional domains to serve as Nostr identities with full redirect support.
 
