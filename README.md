@@ -1,10 +1,23 @@
 # Nostr.Name
 
-## An Experimental Web2 Bridge for HNS TLDs and Nostr Protocol
-Nostr.Name introduces an experimental framework to bridge Handshake (HNS) Top-Level Domains (TLDs) with the Nostr protocol, enabling decentralized identity and social connectivity through TXT records stored onchain or offchain. Compliant with NIP-05 and NIP-21 standards, Nostr.Name leverages the immutability and accessibility of HNS TLDs to map Nostr public keys (npub) to human-readable domain-based identities. This system facilitates seamless integration with Nostr-compatible clients by combining decentralized domain ownership with Nostr's censorship-resistant communication protocol.
+# Nostr.Name - DNS-Based Identity Bridge
+
+Nostr.Name introduces an experimental framework to bridge DNS/HNS domains with the Nostr protocol, enabling decentralized identity and social connectivity through TXT records stored onchain or offchain. Nostr.Name leverages the immutability and accessibility of HNS TLDs and traditional DNS to map Nostr public keys (npub) to human-readable domain-based identities.
+
+The platform serves as a naming bridge that transforms HNS TLDs into `.nostr.name` second-level domains, making them fully NIP-05 compatible for identity verification across the Nostr ecosystem. Additionally, Nostr.Name functions as a NIP-21 redirect service, allowing `nostr:` URI schemes to resolve through domain-based identities.
+
+This system functions as a comprehensive contact directory for DNS-based identity, enabling domain owners to publish not just their Nostr account, but a complete digital identity including profile pictures, cryptocurrency wallets, social profiles, and communication channels - all through simple TXT records.
+
+By combining decentralized domain ownership with Nostr's censorship-resistant communication protocol, Nostr.Name creates a universal identity layer that works across both traditional DNS and blockchain-based naming systems.
 
 ## 1. Introduction
-The Handshake Naming System (HNS) provides a decentralized alternative to traditional DNS, enabling users to own and manage TLDs on a blockchain. Nostr, a simple, open protocol for censorship-resistant social networking, utilizes public-key cryptography to ensure secure and verifiable communication. Nostr.Name bridges these ecosystems, allowing HNS TLD owners to associate their domains with Nostr identities via TXT records, creating resolvable, domain-based Nostr usernames (e.g., `yourname@yourtld.nostr.name`).
+Nostr.Name bridges traditional DNS domains and decentralized HNS TLDs with the Nostr protocol through a unified identity system. The platform enables domain owners to publish comprehensive contact information via simple TXT records, creating a universal directory for decentralized identities.
+
+**For DNS domains**: The platform functions as a NIP-21 compliant contact directory, allowing traditional domains to serve as Nostr identities with full redirect support.
+
+*For HNS TLDs**: Besides the basic DNS functionality, HNS provides enhanced functionality by creating NIP-05 compatible subdomains under `.nostr.name` (e.g., `yourname@yourtld.nostr.name`), while maintaining NIP-21 redirect capabilities (e.g., `https://yourtld.nostr.name`).
+
+This dual approach preserves the accessibility of traditional DNS while leveraging HNS's decentralized nature for enhanced Nostr integration, creating a seamless identity bridge across both naming systems.
 
 ## 2. System Overview
 Nostr.Name operates as a lightweight, experimental Web2 bridge that resolves HNS TLDs to Nostr identities. It leverages TXT records, stored either onchain (via the HNS blockchain) or offchain (via supported platforms or your own Nameservers), to map a user's Nostr public key (npub) to their HNS TLD. The system is fully compliant with:
@@ -15,7 +28,7 @@ Nostr.Name operates as a lightweight, experimental Web2 bridge that resolves HNS
 ### Key Features:
 - Find and Save Nostr users in the directory saved on local storage (easy import/backup/clear)
 - Visiting `yourtld.nostr.name` redirects users to their Nostr profile (if a NIP-21-compatible client is installed)
-- Displays a webpage containing the associated npub, social data, and wallet addresses when no compatible client is detected
+- Displays a webpage containing the associated npub and data when no compatible client is detected
 - Generates a JSON file (`yourtld.nostr.name/.well-known/nostr.json`) containing the npub in HEX format for NIP-05 compatibility
 
 ## 3. Setup Instructions
@@ -70,6 +83,69 @@ Result: `name2@yourtld.nostr.name`
 
 
 Additional users follow the pattern `nostrX:npubX` and `nostrnameX:nameX`.
+
+### 3.4. Add Profile Picture, Socials and Wallets
+
+Enhance your domain identity by adding profile information, social media links, and cryptocurrency wallets through additional TXT records.
+
+#### Setup Instructions
+1. Navigate to your domain manager (e.g., Shakestation, Namebase, etc.)
+2. Add a new TXT record with the following configuration:
+   - **Type**: TXT
+   - **Name**: @
+   - **Value/Data**: `<prefix>:<value>` (e.g., `link:example.com`)
+
+#### Available Prefixes
+
+**Profile & Appearance**
+- `pfp:<url>` - Profile picture URL (e.g., `pfp:example.com/img.png`)
+- `bgcolor:<hex>` - Background color in HEX format (e.g., `bgcolor:ffffff`)
+- `bg:<url>` - Background image URL (e.g., `bg:example.com/bg_img.png`)
+
+**Communication**
+- `mail:<email>` - Email address
+- `tel:<number>` - Phone number
+- `tb:<username>` - Thunderbolt identifier
+- `sx:<contactcode>` - SimpleX Chat
+- `matrix:<username>` - Matrix username
+- `sn:<number>` - Signal profile
+- `wa:<number>` - WhatsApp
+- `tg:<username>` - Telegram
+
+**Web & Decentralized**
+- `link:<url>` - Redirect to a webpage
+- `ens:<url>` - Ethereum Name Service
+- `onion:<url>` - Onion address
+- `ipfs:<url>` - IPFS content
+- `pk:<url>` - pkdns page
+
+**Social Media**
+- `x:<username>` - X (formerly Twitter) profile
+- `nostr:<npub>` - Nostr public key
+- `gh:<username>` - GitHub profile/repo
+- `bsky:<username>` - Bluesky profile
+- `ig:<username>` - Instagram profile
+- `fb:<username>` - Facebook profile
+
+**Media Platforms**
+- `yt:<username>` - YouTube channel/URL
+- `rumble:<channelname>` - Rumble channel/URL
+
+**Cryptocurrency Wallets**
+- `btc:<address>` - Bitcoin
+- `hns:<address>` - Handshake
+- `xmr:<address>` - Monero
+- `eth:<address>` - Ethereum
+- `ln:<address>` - Lightning Network
+- `zec:<address>` - Zcash
+- `bat:<address>` - Basic Attention Token
+
+*Additional supported wallets: aave, ada, algo, apt, atom, avax, bch, bgb, bnb, chainlink, cro, dai, doge, dot, ena, etc, fil, gt, hbar, hype, icp, jup, kas, leo, ltc, mnt, near, okb, om, ondo, op, pepe, pi, pol, render, shib, sol, sui, tao, tia, ton, trx, uni, usdc, usde, usdt, vet, xlm, xrp*
+
+**External Records**
+- `ext:<url>` - Fetch TXT records from an external TLD or SLD (HNS/ICANN)
+
+After configuration, visit `https://yourdomain.hns.bio` or search for your domain on the index page: `https://nostr.name`
 
 ## 4. Technical Details
 ### 4.1. TXT Record Structure
