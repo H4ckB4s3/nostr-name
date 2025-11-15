@@ -136,7 +136,7 @@ Enhance your domain identity by adding profile information, social media links, 
 **External Records**
 - `ext:<url>` - Fetch TXT records from an external TLD or SLD (HNS/ICANN)
 
-After configuration, visit `https://yourdomain.hns.bio` or search for your domain on the index page: `https://nostr.name`
+After configuration, visit `https://yourtld.nostr.name` or search for your domain on the index page: `https://nostr.name`
 
 ## 4. Technical Details
 ### 4.1. TXT Record Structure
