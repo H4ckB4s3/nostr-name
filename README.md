@@ -1,5 +1,3 @@
-# Nostr.Name
-
 # Nostr.Name - DNS-Based Identity Bridge
 
 
