@@ -1,234 +1,705 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Nostr Redirect</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Nostr Redirect · Profile & Posts</title>
     <link rel="icon" href="/img/fav.png" type="image/png">
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        html, body {
-            height: 100%;
-            overflow-x: hidden; /* Prevent horizontal swipe */
+
+        :root {
+            --bg-page: #0a0a0f;
+            --bg-surface: #111827;
+            --bg-elevated: #1f2937;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-light: #1e293b;
+            --purple-500: #8b5cf6;
+            --purple-600: #7c3aed;
+            --purple-glow: rgba(139, 92, 246, 0.15);
+            --success: #10b981;
+            --danger: #ef4444;
+            --post-hover: rgba(255, 255, 255, 0.03);
+            --card-radius: 1.5rem;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f8f8;
-            display: flex;
-            flex-direction: column;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
-            position: relative;
         }
+
         .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 30px;
-            max-width: 600px;
-            width: 100%;
-            margin: 33px auto;
+            max-width: 720px;
+            margin: 0 auto;
         }
-        h1 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
+
+        /* card style (dark, modern) */
+        .card {
+            background: var(--bg-surface);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-light);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.2s ease;
         }
+
+        /* loader & progress */
         .loader-container {
-            margin: 20px 0;
+            margin: 12px 0;
         }
         .loader {
             height: 4px;
-            background: #f0f0f0;
-            border-radius: 2px;
+            background: #1e293b;
+            border-radius: 10px;
             overflow: hidden;
         }
         .loader-bar {
             height: 100%;
-            width: 0;
-            background: #4CAF50;
-            transition: width 0.3s ease;
+            width: 0%;
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+            transition: width 0.25s ease;
         }
         .status {
             text-align: center;
-            margin: 15px 0;
-            color: #666;
-            font-size: 16px;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--text-muted);
+            border-top-color: var(--purple-500);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* nostr link button (green bar) */
         .nostr-link {
             display: block;
-            background: #4CAF50;
+            background: #10b981;
             color: white;
             text-align: center;
-            padding: 14px;
-            border-radius: 8px;
+            padding: 14px 20px;
+            border-radius: 60px;
             text-decoration: none;
-            font-weight: 500;
-            margin-top: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+            word-break: break-all;
             opacity: 0;
-            transition: opacity 0.3s;
-            word-break: break-all; /* Break long URIs */
-            font-size: 14px; /* Smaller font for long URIs */
+            animation: fadeIn 0.3s forwards;
+        }
+        .nostr-link:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* Profile header (like primal / nostr client) */
+        .profile-cover {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-elevated);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            overflow: hidden;
+            border: 3px solid var(--purple-500);
+            margin-bottom: 1rem;
+            background: #1e293b;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-name {
+            font-size: 1.7rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f1f5f9, #cbd5e1);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .profile-npub {
+            font-family: monospace;
+            font-size: 0.7rem;
+            background: var(--bg-elevated);
+            padding: 0.25rem 0.75rem;
+            border-radius: 40px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .profile-npub:hover {
+            color: white;
+            transform: translateY(-1px);
+        }
+        .profile-bio {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Social + wallet row (modern icons) */
+        .links-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .social-icon, .wallet-icon, .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-elevated);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+        }
+        .social-icon:hover, .wallet-icon:hover, .contact-btn:hover {
+            background: var(--purple-500);
+            color: white;
+            transform: translateY(-2px);
+            border-color: var(--purple-500);
+        }
+        .social-icon img, .wallet-icon img {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Posts feed (clean, like primal/amethyst) */
+        .post {
+            background: var(--bg-surface);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-light);
+            transition: all 0.2s;
+            cursor: default;
+        }
+        .post:hover {
+            background: var(--post-hover);
+            transform: translateY(-1px);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .post-author {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .post-handle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 6px;
+        }
+        .post-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+        .post-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .post-content a {
+            color: var(--purple-500);
+            text-decoration: none;
+        }
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+        .post-image {
+            margin-top: 0.75rem;
+            max-width: 100%;
+            border-radius: 1rem;
+            max-height: 450px;
+            object-fit: cover;
+            width: auto;
+            display: block;
+            border: 1px solid var(--border-light);
+            background: #00000020;
+        }
+        .divider {
+            margin: 1rem 0;
+            border-top: 1px solid var(--border-light);
         }
         .debug {
-            margin-top: 30px;
-            padding: 15px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 14px;
             display: none;
-            white-space: pre-wrap; /* Preserve formatting but wrap text */
-            word-break: break-word; /* Break long lines */
-            overflow-wrap: break-word; /* Break long words */
-            max-height: 300px;
-            overflow-y: auto;
         }
-        .debug-title {
-            font-weight: bold;
-            margin-bottom: 8px;
+        .error-msg {
+            background: rgba(239,68,68,0.1);
+            border-left: 3px solid var(--danger);
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            color: #fca5a5;
         }
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-            .container {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-            .nostr-link {
-                font-size: 13px; /* Even smaller on mobile */
-                padding: 12px;
-            }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 1rem;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 0; }
+            .card { padding: 1.2rem; }
+            .profile-avatar { width: 80px; height: 80px; }
+            .profile-name { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Processing Nostr Link...</h1>
-        
+<div class="container">
+    <!-- original green nostr link card (kept functionality) -->
+    <div class="card" style="padding-bottom: 1rem;">
         <div class="loader-container">
-            <div class="loader">
-                <div class="loader-bar" id="progress"></div>
-            </div>
+            <div class="loader"><div class="loader-bar" id="progress"></div></div>
         </div>
-        
-        <p class="status" id="status">Fetching TXT record...</p>
-        
-        <a class="nostr-link" id="nostrLink" href="#">Open in Nostr Client</a>
-        
-        <div class="debug" id="debugInfo">
-            <div id="debugContent"></div>
-        </div>
+        <p class="status" id="status">Resolving DNS TXT record...</p>
+        <a class="nostr-link" id="nostrLink" href="#" target="_blank">Open in Nostr Client</a>
     </div>
 
-    <script>
-        // DOM Elements
-        const nostrLink = document.getElementById('nostrLink');
-        const statusEl = document.getElementById('status');
-        const progressBar = document.getElementById('progress');
-        const debugInfo = document.getElementById('debugInfo');
-        const debugContent = document.getElementById('debugContent');
-        
-        // Get current subdomain
-        const domain = window.location.hostname;
-        const subdomain = domain.split('.')[0];
-        
-        // Debug logging
-        function logDebug(message) {
-            debugInfo.style.display = 'block';
-            debugContent.innerHTML += message + '\n\n';
+    <!-- profile section (dynamic) -->
+    <div id="profileContainer"></div>
+    <!-- posts feed section -->
+    <div id="postsContainer"></div>
+    <footer><a href="https://nostr.name" style="color: var(--purple-500); text-decoration: none;">NOSTR.NAME</a></footer>
+</div>
+
+<script>
+    // ---------- CONFIG ----------
+    const RELAYS = ['wss://relay.damus.io', 'wss://relay.primal.net', 'wss://nos.lol', 'wss://relay.nostr.band'];
+    let sockets = [];
+    let profileCache = new Map();      // hex -> {name, about, picture}
+    let currentNpub = null;
+    let currentHex = null;
+
+    // DOM elements
+    const nostrLink = document.getElementById('nostrLink');
+    const statusEl = document.getElementById('status');
+    const progressBar = document.getElementById('progress');
+    const profileContainer = document.getElementById('profileContainer');
+    const postsContainer = document.getElementById('postsContainer');
+
+    // get subdomain (SLD) from current hostname
+    const domain = window.location.hostname;
+    const subdomain = domain.split('.')[0];
+
+    // ---------- HELPER: bech32 decode (exact from original script) ----------
+    function bech32Decode(bech) {
+        const pos = bech.lastIndexOf('1');
+        if (pos < 0) return null;
+        const data = bech.slice(pos + 1);
+        const alphabet = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+        let words = [];
+        for (let c of data) {
+            let idx = alphabet.indexOf(c);
+            if (idx === -1) return null;
+            words.push(idx);
         }
-        
-        logDebug(`Querying TXT records for: ${subdomain}`);
-        
-        // Animate progress bar
-        let progress = 0;
-        function animateProgress() {
-            progress += 5;
-            progressBar.style.width = `${Math.min(progress, 100)}%`;
-            if (progress < 100) {
-                requestAnimationFrame(animateProgress);
+        let value = 0, bits = 0, result = [];
+        for (let w of words) {
+            value = (value << 5) | w;
+            bits += 5;
+            while (bits >= 8) {
+                result.push((value >> (bits - 8)) & 0xff);
+                bits -= 8;
             }
         }
-        animateProgress();
-        
-        // Improved method to open Nostr client
-        function openNostrClient(npup) {
-            const uri = `nostr:${npup}`;
-            
-            // First try with window.location (works on some mobile browsers)
-            window.location.href = uri;
-            
-            // Fallback: create hidden iframe
-            setTimeout(() => {
-                const iframe = document.createElement('iframe');
-                iframe.src = uri;
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-                
-                // Clean up after a delay
-                setTimeout(() => {
-                    document.body.removeChild(iframe);
-                }, 1000);
-            }, 50);
-            
-            // Final fallback: show clickable link
-            setTimeout(() => {
-                nostrLink.href = uri;
-                nostrLink.textContent = `Open ${uri}`;
-                nostrLink.style.opacity = '1';
-            }, 100);
+        return result.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function npubToHex(npub) {
+        if (!npub || !npub.startsWith('npub1')) return null;
+        try {
+            const hex = bech32Decode(npub);
+            return hex ? hex.slice(0, 64) : null;
+        } catch(e) { return null; }
+    }
+
+    // ---------- DNS TXT lookup (exact method from original script: api.web3dns.net) ----------
+    async function resolveNpubFromDomain(sld) {
+        try {
+            const url = `https://api.web3dns.net/?name=${encodeURIComponent(sld)}&type=TXT`;
+            const resp = await fetch(url, { headers: { 'Accept': 'application/dns-json' } });
+            const data = await resp.json();
+            if (data && data.Answer) {
+                for (let rec of data.Answer) {
+                    if (rec.type === 16) {
+                        let txt = rec.data.replace(/"/g, '');
+                        if (txt.startsWith('nostr:')) {
+                            let npub = txt.split('nostr:')[1];
+                            if (npub && npub.startsWith('npub')) return npub;
+                        }
+                    }
+                }
+            }
+            return null;
+        } catch(e) {
+            console.warn("DNS error:", e);
+            return null;
         }
+    }
+
+    // ---------- RELAYS MANAGEMENT (same as original nostr client) ----------
+    function initRelays() {
+        sockets.forEach(ws => ws.close());
+        sockets = [];
+        RELAYS.forEach(url => {
+            try {
+                const ws = new WebSocket(url);
+                ws.onopen = () => console.log(`✅ relay: ${url}`);
+                ws.onerror = (err) => console.warn(`relay error ${url}`, err);
+                sockets.push(ws);
+            } catch(e) { console.warn(e); }
+        });
+    }
+
+    function queryRelays(filter, timeoutMs = 8000) {
+        return new Promise(resolve => {
+            const events = new Map();
+            let pending = sockets.filter(s => s.readyState === WebSocket.OPEN).length;
+            if (pending === 0) return resolve([]);
+            const subId = 'prof-' + Math.random().toString(36).slice(2);
+            const messageHandler = (e) => {
+                try {
+                    const msg = JSON.parse(e.data);
+                    if (msg[0] === 'EVENT' && msg[1] === subId) events.set(msg[2].id, msg[2]);
+                    if (msg[0] === 'EOSE' && msg[1] === subId) { pending--; if (pending <= 0) finish(); }
+                } catch(err) {}
+            };
+            const listeners = [];
+            sockets.forEach(ws => {
+                if (ws.readyState !== WebSocket.OPEN) return;
+                ws.addEventListener('message', messageHandler);
+                listeners.push(() => ws.removeEventListener('message', messageHandler));
+                ws.send(JSON.stringify(['REQ', subId, filter]));
+            });
+            const timer = setTimeout(() => finish(), timeoutMs);
+            function finish() {
+                clearTimeout(timer);
+                listeners.forEach(fn => fn());
+                sockets.forEach(ws => { if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(['CLOSE', subId])); });
+                resolve(Array.from(events.values()));
+            }
+        });
+    }
+
+    async function fetchUserMetadata(hex) {
+        if (profileCache.has(hex)) return profileCache.get(hex);
+        const events = await queryRelays({ authors: [hex], kinds: [0], limit: 1 });
+        let profile = { name: hex.slice(0, 8), about: '', picture: null, nip05: null };
+        if (events.length > 0) {
+            try {
+                const content = JSON.parse(events[0].content);
+                profile = {
+                    name: content.name || content.display_name || hex.slice(0, 8),
+                    about: content.about || '',
+                    picture: content.picture || null,
+                    nip05: content.nip05 || null
+                };
+            } catch(e) {}
+        }
+        profileCache.set(hex, profile);
+        return profile;
+    }
+
+    async function fetchUserPosts(hex, limit = 30) {
+        const metadata = await fetchUserMetadata(hex);
+        const events = await queryRelays({ authors: [hex], kinds: [1], limit: limit });
+        const sorted = events.sort((a,b) => b.created_at - a.created_at);
+        return sorted.map(ev => {
+            let imageUrl = null;
+            if (ev.content) {
+                const imgMatch = ev.content.match(/https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|webp)(\?[^\s]*)?/i);
+                if (imgMatch) imageUrl = imgMatch[0];
+            }
+            if (ev.tags && !imageUrl) {
+                const imgTag = ev.tags.find(t => t[0] === 'image' || (t[0] === 'r' && /\.(jpg|jpeg|png|gif|webp)$/i.test(t[1])));
+                if (imgTag) imageUrl = imgTag[1] || imgTag[2];
+            }
+            let contentWithLinks = ev.content;
+            if (contentWithLinks) {
+                contentWithLinks = contentWithLinks.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+            }
+            return {
+                id: ev.id,
+                pubkey: hex,
+                content: contentWithLinks,
+                created_at: ev.created_at * 1000,
+                name: metadata.name,
+                picture: metadata.picture,
+                image: imageUrl
+            };
+        });
+    }
+
+    // ---------- parse social/wallets from DNS TXT records (exactly as nostr.name reference) ----------
+    async function fetchAllTXTRecords(domainName) {
+        try {
+            const url = `https://api.web3dns.net/?name=${encodeURIComponent(domainName)}&type=TXT&_=${Date.now()}`;
+            const resp = await fetch(url, { headers: { 'Accept': 'application/dns-json' }, cache: 'no-store' });
+            const data = await resp.json();
+            if (data && data.Answer) {
+                return data.Answer.filter(r => r.type === 16).map(r => r.data.replace(/"/g, ''));
+            }
+            return [];
+        } catch(e) { return []; }
+    }
+
+    function getRecordValue(records, prefix) {
+        const record = records.find(r => r.startsWith(prefix + ':'));
+        if (!record) return null;
+        let value = record.split(prefix + ':')[1];
+        if (prefix === 'tel' && value && !value.startsWith('+') && value.startsWith('00')) value = '+' + value.slice(2);
+        return value;
+    }
+
+    //  social & wallet rendering (icons based on nostr.name)
+    const ICON_BASE = 'https://hns.bio/img/';   // fallback icons, but we'll use inline emoji or generic
+    function renderSocialLinks(records) {
+        const socialMap = {
+            'x': { name: 'X', icon: 'https://hns.bio/img/x.png', urlPrefix: 'https://x.com/' },
+            'tg': { name: 'Telegram', icon: 'https://hns.bio/img/tg.png', urlPrefix: 'https://t.me/' },
+            'gh': { name: 'GitHub', icon: 'https://hns.bio/img/gh.png', urlPrefix: 'https://github.com/' },
+            'bsky': { name: 'Bluesky', icon: 'https://hns.bio/img/bsky.png', urlPrefix: 'https://bsky.app/profile/' },
+            'sn': { name: 'Signal', icon: 'https://hns.bio/img/sn.png', urlPrefix: 'https://signal.me/#p/' },
+            'mail': { name: 'Email', icon: 'https://hns.bio/img/mail.png', urlPrefix: 'mailto:' },
+            'url': { name: 'Website', icon: 'https://hns.bio/img/link.png', urlPrefix: 'http://' },
+            'link': { name: 'Link', icon: 'https://hns.bio/img/link.png', urlPrefix: 'http://' },
+            'onion': { name: 'Onion', icon: 'https://hns.bio/img/onion.png', urlPrefix: 'http://' },
+            'ens': { name: 'ENS', icon: 'https://hns.bio/img/ens.png', urlPrefix: 'http://' }
+        };
+        let socialItems = [];
+        for (let [key, cfg] of Object.entries(socialMap)) {
+            let val = getRecordValue(records, key);
+            if (val) {
+                let link = cfg.urlPrefix + val;
+                if (key === 'bsky' && !val.includes('.')) link = `https://bsky.app/profile/${val}.bsky.social`;
+                if (key === 'onion') link = `http://${val}`;
+                socialItems.push(`<a href="${link}" target="_blank" rel="noopener" class="social-icon"><img src="${cfg.icon}" alt="${cfg.name}" onerror="this.style.display='none'"></a>`);
+            }
+        }
+        // nostr special
+        if (currentNpub) {
+            socialItems.push(`<a href="nostr:${currentNpub}" target="_blank" class="social-icon"><img src="https://hns.bio/img/nostr.png" alt="Nostr"></a>`);
+        }
+        return socialItems.join('');
+    }
+
+    function renderWallets(records) {
+        const wallets = ['btc', 'ln', 'eth', 'hns', 'xmr', 'zec', 'bat'];
+        let walletItems = [];
+        for (let w of wallets) {
+            let val = getRecordValue(records, w);
+            if (val) {
+                let iconUrl = `https://hns.bio/img/${w}.png`;
+                walletItems.push(`<div class="wallet-icon" onclick="copyToClipboard('${escapeHtml(val)}')"><img src="${iconUrl}" alt="${w.toUpperCase()}" onerror="this.style.display='none'"></div>`);
+            }
+        }
+        return walletItems.join('');
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    async function loadFullProfileAndPosts(sld, npub) {
+        statusEl.innerHTML = '<span class="spinner"></span> Fetching profile & notes from relays...';
+        progressBar.style.width = '70%';
+        const hex = npubToHex(npub);
+        if (!hex) throw new Error('Invalid npub');
+        currentHex = hex;
+        // metadata + posts from nostr
+        const metadata = await fetchUserMetadata(hex);
+        const posts = await fetchUserPosts(hex, 35);
+        // additional DNS records for socials/wallets (nostr.name style)
+        const allRecords = await fetchAllTXTRecords(sld);
+        const pfpFromDns = getRecordValue(allRecords, 'pfp');
+        const finalPicture = pfpFromDns ? `https://${pfpFromDns}` : (metadata.picture || null);
+        const displayName = getRecordValue(allRecords, 'name') || metadata.name || sld;
+        const bioText = getRecordValue(allRecords, 'bio') || metadata.about || '';
         
-        // Setup the Nostr link
-        function setupNostrLink(npup) {
-            const uri = `nostr:${npup}`;
-            
-            // Set up the visible link
+        // Render Profile Card (with social + wallets)
+        const avatarHtml = finalPicture ? `<img src="${finalPicture}" onerror="this.src=''">` : '⚡';
+        const socialsHtml = renderSocialLinks(allRecords);
+        const walletsHtml = renderWallets(allRecords);
+        
+        profileContainer.innerHTML = `
+            <div class="card">
+                <div class="profile-cover">
+                    <div class="profile-avatar">${avatarHtml}</div>
+                    <div class="profile-name">${escapeHtml(displayName)}</div>
+                    <div class="profile-npub" onclick="copyToClipboard('${escapeHtml(npub)}')">${escapeHtml(npub.slice(0,16))}...${escapeHtml(npub.slice(-8))}</div>
+                    ${bioText ? `<div class="profile-bio">${escapeHtml(bioText)}</div>` : ''}
+                    <div class="links-section">
+                        ${socialsHtml}
+                    </div>
+                    ${walletsHtml ? `<div class="links-section" style="margin-top:0;">${walletsHtml}</div>` : ''}
+                    <div class="links-section" style="margin-top: 0.5rem;">
+                        <a href="https://nostr.name/?npub=${encodeURIComponent(sld)}" target="_blank" class="contact-btn">Add to Contacts</a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Render Posts (clean, modern, like primal)
+        if (!posts.length) {
+            postsContainer.innerHTML = `<div class="card"><p style="text-align:center; color:var(--text-muted);">📭 No public notes found on relays. The user hasn't posted any kind 1 events yet.</p></div>`;
+        } else {
+            const postsHtml = posts.map(p => {
+                const avatarSmall = p.picture ? `<img src="${p.picture}" onerror="this.src=''">` : '👤';
+                return `
+                    <div class="post">
+                        <div class="post-header">
+                            <div class="post-avatar">${avatarSmall}</div>
+                            <div>
+                                <span class="post-author">${escapeHtml(p.name || p.pubkey.slice(0,10))}</span>
+                                <span class="post-handle">${p.pubkey.slice(0,8)}</span>
+                            </div>
+                            <div class="post-time">${new Date(p.created_at).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}</div>
+                        </div>
+                        <div class="post-content">${p.content || ''}</div>
+                        ${p.image ? `<img src="${p.image}" class="post-image" loading="lazy" onerror="this.style.display='none'" alt="post media">` : ''}
+                    </div>
+                `;
+            }).join('');
+            postsContainer.innerHTML = `<div class="card">${postsHtml}</div>`;
+        }
+        progressBar.style.width = '100%';
+        statusEl.innerHTML = '✅ Profile & posts loaded';
+    }
+
+    // --- original open nostr link behavior (green bar) unchanged ---
+    function openNostrClient(npup) {
+        const uri = `nostr:${npup}`;
+        window.location.href = uri;
+        setTimeout(() => {
+            const iframe = document.createElement('iframe');
+            iframe.src = uri;
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            setTimeout(() => document.body.removeChild(iframe), 1000);
+        }, 50);
+        setTimeout(() => {
             nostrLink.href = uri;
             nostrLink.textContent = `Open ${uri}`;
             nostrLink.style.opacity = '1';
-            
-            // Try to open directly
-            openNostrClient(npup);
+        }, 100);
+    }
+    function setupNostrLink(npup) {
+        const uri = `nostr:${npup}`;
+        nostrLink.href = uri;
+        nostrLink.textContent = `Open ${uri}`;
+        nostrLink.style.opacity = '1';
+        openNostrClient(npup);
+    }
+
+    // --- main execution (based on subdomain, no user input) ---
+    async function main() {
+        if (!subdomain || subdomain === 'www' || subdomain === 'nostr') {
+            statusEl.innerHTML = '⚠️ No valid subdomain. Use something like: yourname.nostr.xyz';
+            progressBar.style.width = '100%';
+            return;
         }
-        
-        // Fetch TXT records
-        fetch(`https://resolve.shakestation.io/dns-query?name=${subdomain}&type=TXT`)
-        // fetch(`https://doh.hnsdns.com/dns-query?name=${subdomain}&type=TXT`)
-            .then(response => response.json())
-            .then(data => {
-                logDebug(`DNS Response:\n${JSON.stringify(data, null, 2)}`);
-                
-                // Find nostr: record
-                const nostrRecord = data.Answer?.find(record => 
-                    record.data.includes('nostr:')
-                );
-                
-                if (nostrRecord) {
-                    const match = nostrRecord.data.match(/nostr:([^\s"]+)/);
-                    if (match) {
-                        statusEl.textContent = 'Found Nostr address';
-                        setupNostrLink(match[1]);
-                    } else {
-                        throw new Error('Invalid Nostr record format');
-                    }
-                } else {
-                    throw new Error('No Nostr record found');
-                }
-            })
-            .catch(error => {
-                statusEl.textContent = 'Error: ' + error.message;
-                progressBar.style.background = '#f44336';
-                logDebug(`Error: ${error.message}`);
-            });
-    </script>
+        // animate progress
+        let p = 0;
+        const interval = setInterval(() => { p += 6; progressBar.style.width = `${Math.min(p, 50)}%`; if(p>=50) clearInterval(interval); }, 100);
+        statusEl.innerHTML = `🔍 Resolving TXT for: ${subdomain}`;
+        let npub = await resolveNpubFromDomain(subdomain);
+        clearInterval(interval);
+        if (!npub) {
+            statusEl.innerHTML = `❌ No "nostr:npub1..." TXT record found for "${subdomain}".`;
+            progressBar.style.width = '100%';
+            progressBar.style.background = '#ef4444';
+            profileContainer.innerHTML = `<div class="card error-msg">❌ DNS lookup failed: missing nostr: record. Add TXT "nostr:npub1..." to your HNS TLD.</div>`;
+            return;
+        }
+        progressBar.style.width = '60%';
+        currentNpub = npub;
+        statusEl.innerHTML = `✅ Found npub! Fetching Nostr profile & posts...`;
+        setupNostrLink(npub);
+        // initialize relays
+        initRelays();
+        // wait a bit for websockets to open
+        await new Promise(r => setTimeout(r, 800));
+        try {
+            await loadFullProfileAndPosts(subdomain, npub);
+            progressBar.style.width = '100%';
+            statusEl.innerHTML = `Loaded — ${subdomain}`;
+        } catch(err) {
+            console.error(err);
+            statusEl.innerHTML = `Error fetching Nostr data: ${err.message}`;
+            profileContainer.innerHTML = `<div class="card error-msg">Failed to fetch profile from relays. Check connection.</div>`;
+        }
+    }
+
+    window.copyToClipboard = function(text) {
+        navigator.clipboard.writeText(text).then(() => alert('Copied: ' + text.slice(0,30)+'...')).catch(() => alert('Manual copy: '+text));
+    };
+    main();
+</script>
 </body>
 </html>
