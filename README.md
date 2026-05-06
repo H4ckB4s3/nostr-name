@@ -29,8 +29,11 @@ To associate domain with a Nostr identity, users must configure TXT records in D
 1. **Create a TXT Record**:
    - Type: `TXT`
    - Name: `@`
-   - Value: `nostr:yournpubhere`
-   > **Note**: No spaces, `nostr:` prefix is mandatory
+   - Value: `yournpubhere`
+   > **Note**: The following prefixes still work too:  
+
+nostr:npubhere  
+nostr=npubhere
 
 2. **Propagation**:
    - Offchain TXT records provide instant results
